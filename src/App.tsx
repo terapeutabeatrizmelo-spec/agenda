@@ -7,7 +7,7 @@ import { WeekView } from './views/WeekView';
 import { MonthView } from './views/MonthView';
 import { Modal } from './components/ui/Modal';
 import { AppointmentForm } from './components/ui/AppointmentForm';
-import { AppointmentProvider } from './context/AppointmentContext';
+import { AppointmentProvider, useAppointments } from './context/AppointmentContext';
 import { useToast } from './context/ToastContext';
 import type { ViewMode, Appointment } from './types';
 
@@ -16,8 +16,10 @@ function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('month');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [editingAppointment, setEditingAppointment] = useState<Appointment | null>(null);
-  const { showToast } = useToast();
+  const [editingAppointment, setEditingAppointment] = useState<Appointment | undefined>(undefined);
+
+  const { addAppointment, updateAppointment, deleteAppointment } = useAppointments();
+  const { addToast } = useToast();
 
   const handlePrevious = () => {
     const newDate = new Date(currentDate);
@@ -48,7 +50,7 @@ function App() {
   };
 
   const handleAddClick = () => {
-    setEditingAppointment(null);
+    setEditingAppointment(undefined);
     setIsModalOpen(true);
   };
 
@@ -57,16 +59,23 @@ function App() {
     setIsModalOpen(true);
   };
 
-  const handleSaveAppointment = () => {
+  const handleSubmit = (data: Omit<Appointment, 'id'>) => {
+    if (editingAppointment) {
+      updateAppointment(editingAppointment.id, data);
+      addToast('Compromisso atualizado!', 'success');
+    } else {
+      addAppointment(data);
+      addToast('Compromisso criado!', 'success');
+    }
     setIsModalOpen(false);
-    setEditingAppointment(null);
-    showToast(editingAppointment ? 'Compromisso atualizado!' : 'Compromisso criado!', 'success');
+    setEditingAppointment(undefined);
   };
 
-  const handleDeleteAppointment = () => {
+  const handleDelete = (id: string) => {
+    deleteAppointment(id);
+    addToast('Compromisso excluído', 'info');
     setIsModalOpen(false);
-    setEditingAppointment(null);
-    showToast('Compromisso excluído', 'info');
+    setEditingAppointment(undefined);
   };
 
   return (
@@ -94,9 +103,9 @@ function App() {
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingAppointment ? 'Editar Compromisso' : 'Novo Compromisso'}>
         <AppointmentForm
-          appointment={editingAppointment}
-          onSave={handleSaveAppointment}
-          onDelete={handleDeleteAppointment}
+          initialData={editingAppointment}
+          onSubmit={handleSubmit}
+          onDelete={editingAppointment ? handleDelete : undefined}
           onCancel={() => setIsModalOpen(false)}
         />
       </Modal>
