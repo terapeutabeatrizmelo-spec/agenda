@@ -69,9 +69,9 @@ export const Header: React.FC<HeaderProps> = ({
                 </h2>
             </div>
 
-            <div className="flex items-center gap-2 md:gap-4 shrink-0 pl-2">
+            <div className="flex items-center gap-1.5 md:gap-4 shrink-0 pl-1 md:pl-2">
                 {/* View Switcher - Icons on Mobile, Text on Desktop */}
-                <div className="flex bg-black/20 p-1 rounded-xl border border-white/5 gap-1">
+                <div className="flex bg-black/20 p-0.5 md:p-1 rounded-xl border border-white/5 gap-0.5 md:gap-1">
                     {(['day', 'week', 'month'] as const).map((mode) => {
                         const Icon = ViewIcon[mode];
                         const labels = { day: 'Dia', week: 'Semana', month: 'Mês' };
@@ -83,21 +83,21 @@ export const Header: React.FC<HeaderProps> = ({
                                 onClick={() => onViewChange(mode)}
                                 className={`
                                     relative flex items-center justify-center
-                                    w-9 h-9 md:w-auto md:h-auto md:px-4 md:py-1.5 
+                                    min-w-[32px] w-8 h-8 md:w-auto md:h-auto md:px-4 md:py-1.5 
                                     rounded-lg text-sm font-medium transition-all duration-200
                                     ${isActive ? 'text-white bg-white/10 shadow-sm' : 'text-white/50 hover:text-white hover:bg-white/5'}
                                 `}
                                 title={labels[mode]}
                             >
                                 <span className="hidden md:inline">{labels[mode]}</span>
-                                <Icon size={20} className={`${isActive ? 'stroke-[2.5px]' : ''}`} />
+                                <Icon size={16} className={`md:hidden ${isActive ? 'stroke-[2.5px]' : ''}`} />
                             </button>
                         );
                     })}
                 </div>
 
-                <Button onClick={onAddClick} variant="primary" className="shadow-violet-500/20 !p-2 md:!px-4 md:!py-2 w-9 h-9 md:w-auto md:h-auto flex items-center justify-center">
-                    <Plus size={20} />
+                <Button onClick={onAddClick} variant="primary" className="shadow-violet-500/20 !p-0 !w-8 !h-8 md:!w-auto md:!h-auto md:!px-4 md:!py-2 flex items-center justify-center">
+                    <Plus size={18} />
                     <span className="hidden md:inline ml-2">Novo</span>
                 </Button>
             </div>
