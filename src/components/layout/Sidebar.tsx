@@ -11,6 +11,7 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, viewMode, onViewChange }) => {
     const views: { mode: ViewMode; icon: typeof Calendar; label: string }[] = [
+        { mode: 'agenda', icon: Calendar, label: 'Agenda' },
         { mode: 'day', icon: List, label: 'Dia' },
         { mode: 'week', icon: LayoutGrid, label: 'Semana' },
         { mode: 'month', icon: Calendar, label: 'Mês' }
@@ -57,8 +58,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, viewMode, onV
                                     onClose();
                                 }}
                                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${viewMode === mode
-                                        ? 'bg-violet-500 text-white shadow-lg shadow-violet-500/30'
-                                        : 'text-white/70 hover:bg-white/10 hover:text-white'
+                                    ? 'bg-violet-500 text-white shadow-lg shadow-violet-500/30'
+                                    : 'text-white/70 hover:bg-white/10 hover:text-white'
                                     }`}
                             >
                                 <Icon size={20} className={viewMode === mode ? 'stroke-[2.5px]' : ''} />

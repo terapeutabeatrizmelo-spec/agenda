@@ -11,7 +11,7 @@ export interface Appointment {
   notificationSent?: boolean;
 }
 
-export type ViewMode = 'day' | 'week' | 'month';
+export type ViewMode = 'day' | 'week' | 'month' | 'agenda';
 
 export interface CalendarState {
   currentDate: Date;

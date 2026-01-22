@@ -29,7 +29,17 @@ export const Header: React.FC<HeaderProps> = ({
                     <Menu size={24} />
                 </button>
 
-                {/* Logo - Desktop only */}
+                {/* Logo - Mobile (icon only) */}
+                <div className="flex md:hidden items-center gap-2">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-violet-500/20">
+                        <img src="/coffee-cup-v5.png" alt="Coffee Cup" className="w-[115%] h-[115%] object-contain drop-shadow-md" />
+                    </div>
+                    <h1 className="text-base font-bold text-white">
+                        Terapia com Café
+                    </h1>
+                </div>
+
+                {/* Logo - Desktop (full) */}
                 <div className="hidden md:flex items-center gap-3">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-violet-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-violet-500/20">
                         <img src="/coffee-cup-v5.png" alt="Coffee Cup" className="w-[115%] h-[115%] object-contain drop-shadow-md" />

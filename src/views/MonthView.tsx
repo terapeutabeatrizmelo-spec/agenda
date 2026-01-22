@@ -2,6 +2,7 @@ import React from 'react';
 import { format, isSameMonth, isSameDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { getMonthDays } from '../utils/dateUtils';
+import { getHolidayName } from '../utils/holidays';
 import { useAppointments } from '../context/AppointmentContext';
 import type { Appointment } from '../types';
 
@@ -41,7 +42,7 @@ export const MonthView: React.FC<MonthViewProps> = ({ currentDate, onEditAppoint
 
             {/* Calendar Grid */}
             <div className="flex-1 overflow-y-auto custom-scrollbar p-4">
-                <div className="h-full flex flex-col min-w-[600px] md:min-w-0">
+                <div className="h-full flex flex-col">
                     {/* Weekday Headers */}
                     <div className="grid grid-cols-7 gap-1 md:gap-2 mb-2">
                         {weekDays.map(day => (
@@ -59,22 +60,33 @@ export const MonthView: React.FC<MonthViewProps> = ({ currentDate, onEditAppoint
                                     const dayAppointments = getAppointmentsForDay(day);
                                     const isCurrentMonthDay = isCurrentMonth(day);
                                     const isTodayDay = isToday(day);
+                                    const holidayName = getHolidayName(day);
+                                    const isHolidayDay = holidayName !== null;
 
                                     return (
                                         <div
                                             key={`${weekIndex}-${dayIndex}`}
                                             className={`
                                                 relative rounded-lg md:rounded-xl border transition-all
-                                                ${isCurrentMonthDay
-                                                    ? 'bg-white/5 border-white/10 hover:bg-white/10'
-                                                    : 'bg-black/20 border-white/5 opacity-40'
+                                                ${isHolidayDay
+                                                    ? 'bg-red-500/20 border-red-500/50 hover:bg-red-500/30'
+                                                    : isCurrentMonthDay
+                                                        ? 'bg-white/5 border-white/10 hover:bg-white/10'
+                                                        : 'bg-black/20 border-white/5 opacity-40'
                                                 }
                                                 ${isTodayDay ? 'ring-1 md:ring-2 ring-violet-500' : ''}
                                                 min-h-[60px] md:min-h-[80px] p-1 md:p-2 flex flex-col group
                                             `}
                                         >
+                                            {/* Holiday Name (if applicable) */}
+                                            {isHolidayDay && (
+                                                <div className="absolute top-0 left-0 right-0 text-[7px] md:text-[9px] font-semibold text-red-400 px-1 pt-0.5 truncate">
+                                                    {holidayName}
+                                                </div>
+                                            )}
+
                                             {/* Day Number */}
-                                            <div className="flex justify-between items-start mb-1">
+                                            <div className={`flex justify-between items-start ${isHolidayDay ? 'mt-3 md:mt-4' : 'mb-1'}`}>
                                                 <span className={`
                                                     text-xs md:text-sm font-semibold
                                                     ${isTodayDay

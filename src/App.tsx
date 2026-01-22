@@ -9,6 +9,7 @@ import { Modal } from './components/ui/Modal';
 import { AppointmentForm } from './components/ui/AppointmentForm';
 import { AppointmentProvider, useAppointments } from './context/AppointmentContext';
 import { useToast } from './context/ToastContext';
+import { AgendaView } from './views/AgendaView';
 import type { ViewMode, Appointment } from './types';
 
 function App() {
@@ -95,6 +96,7 @@ function App() {
         onMenuClick={() => setIsSidebarOpen(true)}
       />
 
+      {viewMode === 'agenda' && <AgendaView onEditAppointment={handleEditAppointment} />}
       {viewMode === 'day' && <DayView currentDate={currentDate} onEditAppointment={handleEditAppointment} />}
       {viewMode === 'week' && <WeekView currentDate={currentDate} onEditAppointment={handleEditAppointment} />}
       {viewMode === 'month' && <MonthView currentDate={currentDate} onEditAppointment={handleEditAppointment} />}
