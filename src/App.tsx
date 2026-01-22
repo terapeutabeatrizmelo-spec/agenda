@@ -99,7 +99,7 @@ function App() {
       {viewMode === 'agenda' && <AgendaView onEditAppointment={handleEditAppointment} />}
       {viewMode === 'day' && <DayView currentDate={currentDate} onEditAppointment={handleEditAppointment} />}
       {viewMode === 'week' && <WeekView currentDate={currentDate} onEditAppointment={handleEditAppointment} />}
-      {viewMode === 'month' && <MonthView currentDate={currentDate} onEditAppointment={handleEditAppointment} />}
+      {viewMode === 'month' && <MonthView currentDate={currentDate} onEditAppointment={handleEditAppointment} onPrev={handlePrevious} onNext={handleNext} />}
 
       <FloatingActionButton onClick={handleAddClick} />
 

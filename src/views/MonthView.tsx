@@ -9,10 +9,14 @@ import type { Appointment } from '../types';
 interface MonthViewProps {
     currentDate: Date;
     onEditAppointment: (appt: Appointment) => void;
+    onPrev?: () => void;
+    onNext?: () => void;
 }
 
-export const MonthView: React.FC<MonthViewProps> = ({ currentDate, onEditAppointment }) => {
+export const MonthView: React.FC<MonthViewProps> = ({ currentDate, onEditAppointment, onPrev, onNext }) => {
     const { appointments } = useAppointments();
+    const [touchStart, setTouchStart] = React.useState<number | null>(null);
+    const [touchEnd, setTouchEnd] = React.useState<number | null>(null);
 
     const monthDays = getMonthDays(currentDate);
     const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
@@ -25,6 +29,32 @@ export const MonthView: React.FC<MonthViewProps> = ({ currentDate, onEditAppoint
     const isToday = (day: Date) => isSameDay(day, new Date());
     const isCurrentMonth = (day: Date) => isSameMonth(day, currentDate);
 
+    // Swipe navigation
+    const minSwipeDistance = 50;
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setTouchEnd(null);
+        setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const handleTouchEnd = () => {
+        if (!touchStart || !touchEnd) return;
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > minSwipeDistance;
+        const isRightSwipe = distance < -minSwipeDistance;
+
+        if (isLeftSwipe && onNext) {
+            onNext();
+        }
+        if (isRightSwipe && onPrev) {
+            onPrev();
+        }
+    };
+
     // Group days into weeks
     const weeks: Date[][] = [];
     for (let i = 0; i < monthDays.length; i += 7) {
@@ -32,11 +62,16 @@ export const MonthView: React.FC<MonthViewProps> = ({ currentDate, onEditAppoint
     }
 
     return (
-        <div className="flex-1 overflow-hidden flex flex-col mx-4 mb-4 glass-panel relative">
+        <div
+            className="flex-1 overflow-hidden flex flex-col mx-4 mb-4 glass-panel relative"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+        >
             {/* Month Header */}
             <div className="p-4 border-b border-white/5 bg-white/5 backdrop-blur-md">
                 <h3 className="text-2xl font-bold text-white text-center capitalize">
-                    {format(currentDate, 'MMMM yyyy', { locale: ptBR })}
+                    {format(currentDate, 'MMMM', { locale: ptBR })}
                 </h3>
             </div>
 
