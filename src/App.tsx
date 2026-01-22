@@ -50,6 +50,12 @@ function App() {
     setCurrentDate(new Date());
   };
 
+  const handleYearChange = (year: number) => {
+    const newDate = new Date(currentDate);
+    newDate.setFullYear(year);
+    setCurrentDate(newDate);
+  };
+
   const handleAddClick = () => {
     setEditingAppointment(undefined);
     setIsModalOpen(true);
@@ -94,6 +100,7 @@ function App() {
         onNext={handleNext}
         onToday={handleToday}
         onMenuClick={() => setIsSidebarOpen(true)}
+        onYearChange={handleYearChange}
       />
 
       {viewMode === 'agenda' && <AgendaView onEditAppointment={handleEditAppointment} />}

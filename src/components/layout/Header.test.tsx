@@ -8,6 +8,7 @@ describe('Header', () => {
         const mockOnNext = vi.fn();
         const mockOnToday = vi.fn();
         const mockOnMenuClick = vi.fn();
+        const mockOnYearChange = vi.fn();
 
         render(
             <Header
@@ -16,6 +17,7 @@ describe('Header', () => {
                 onNext={mockOnNext}
                 onToday={mockOnToday}
                 onMenuClick={mockOnMenuClick}
+                onYearChange={mockOnYearChange}
             />
         );
 
@@ -28,6 +30,7 @@ describe('Header', () => {
         const mockOnNext = vi.fn();
         const mockOnToday = vi.fn();
         const mockOnMenuClick = vi.fn();
+        const mockOnYearChange = vi.fn();
 
         render(
             <Header
@@ -36,6 +39,7 @@ describe('Header', () => {
                 onNext={mockOnNext}
                 onToday={mockOnToday}
                 onMenuClick={mockOnMenuClick}
+                onYearChange={mockOnYearChange}
             />
         );
 

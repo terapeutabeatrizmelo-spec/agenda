@@ -1,6 +1,5 @@
 import React from 'react';
 import { format, isSameMonth, isSameDay } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 import { getMonthDays } from '../utils/dateUtils';
 import { getHolidayName } from '../utils/holidays';
 import { useAppointments } from '../context/AppointmentContext';
@@ -71,7 +70,7 @@ export const MonthView: React.FC<MonthViewProps> = ({ currentDate, onEditAppoint
             {/* Month Header */}
             <div className="p-4 border-b border-white/5 bg-white/5 backdrop-blur-md">
                 <h3 className="text-2xl font-bold text-white text-center capitalize">
-                    {format(currentDate, 'MMMM', { locale: ptBR })}
+                    {['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'][currentDate.getMonth()]}
                 </h3>
             </div>
 
