@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --color-primary: #8b5cf6;
+    --color-secondary: #06b6d4;
+    --color-dark: #0f172a;
+    --border-glass: rgba(255, 255, 255, 0.18);
+    --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    --header-height: 80px;
+  }
+
+  body {
+    @apply m-0 flex min-h-screen min-w-[320px] place-items-center bg-[#0f0f12] text-white/90 font-sans;
+    background-image:
+      radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.15), transparent 40%),
+      radial-gradient(circle at 80% 50%, rgba(6, 182, 212, 0.1), transparent 40%);
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-xl rounded-2xl;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-br from-violet-400 to-cyan-400 bg-clip-text text-transparent;
+  }
+}
+
+/* Custom Steam Animation */
+@keyframes steam {
+  0% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+
+  100% {
+    transform: translateY(-8px);
+    opacity: 0;
+  }
+}
+
+.animate-steam {
+  animation: steam 2s ease-in-out infinite;
+}
