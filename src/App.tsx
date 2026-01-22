@@ -1,34 +1,46 @@
 import { useState } from 'react';
-import { addDays, subDays, addWeeks, subWeeks, addMonths, subMonths } from 'date-fns';
-import { useAppointments } from './context/AppointmentContext';
-import { useToast } from './context/ToastContext';
 import { Header } from './components/layout/Header';
+import { Sidebar } from './components/layout/Sidebar';
+import { FloatingActionButton } from './components/ui/FloatingActionButton';
 import { DayView } from './views/DayView';
 import { WeekView } from './views/WeekView';
 import { MonthView } from './views/MonthView';
 import { Modal } from './components/ui/Modal';
 import { AppointmentForm } from './components/ui/AppointmentForm';
+import { AppointmentProvider } from './context/AppointmentContext';
+import { useToast } from './context/ToastContext';
 import type { ViewMode, Appointment } from './types';
 
 function App() {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [viewMode, setViewMode] = useState<ViewMode>('day');
+  const [viewMode, setViewMode] = useState<ViewMode>('month');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingAppointment, setEditingAppointment] = useState<Appointment | undefined>(undefined);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [editingAppointment, setEditingAppointment] = useState<Appointment | null>(null);
+  const { showToast } = useToast();
 
-  const { addAppointment, updateAppointment, deleteAppointment } = useAppointments();
-  const { addToast } = useToast();
-
-  const handlePrev = () => {
-    if (viewMode === 'day') setCurrentDate(prev => subDays(prev, 1));
-    if (viewMode === 'week') setCurrentDate(prev => subWeeks(prev, 1));
-    if (viewMode === 'month') setCurrentDate(prev => subMonths(prev, 1));
+  const handlePrevious = () => {
+    const newDate = new Date(currentDate);
+    if (viewMode === 'day') {
+      newDate.setDate(newDate.getDate() - 1);
+    } else if (viewMode === 'week') {
+      newDate.setDate(newDate.getDate() - 7);
+    } else {
+      newDate.setMonth(newDate.getMonth() - 1);
+    }
+    setCurrentDate(newDate);
   };
 
   const handleNext = () => {
-    if (viewMode === 'day') setCurrentDate(prev => addDays(prev, 1));
-    if (viewMode === 'week') setCurrentDate(prev => addWeeks(prev, 1));
-    if (viewMode === 'month') setCurrentDate(prev => addMonths(prev, 1));
+    const newDate = new Date(currentDate);
+    if (viewMode === 'day') {
+      newDate.setDate(newDate.getDate() + 1);
+    } else if (viewMode === 'week') {
+      newDate.setDate(newDate.getDate() + 7);
+    } else {
+      newDate.setMonth(newDate.getMonth() + 1);
+    }
+    setCurrentDate(newDate);
   };
 
   const handleToday = () => {
@@ -36,71 +48,66 @@ function App() {
   };
 
   const handleAddClick = () => {
-    setEditingAppointment(undefined);
+    setEditingAppointment(null);
     setIsModalOpen(true);
   };
 
-  const handleEditClick = (appt: Appointment) => {
-    setEditingAppointment(appt);
+  const handleEditAppointment = (appointment: Appointment) => {
+    setEditingAppointment(appointment);
     setIsModalOpen(true);
   };
 
-  const handleSave = (data: Omit<Appointment, 'id'>) => {
-    if (editingAppointment) {
-      updateAppointment(editingAppointment.id, data);
-    } else {
-      addAppointment(data);
-    }
-    addToast('Compromisso salvo com sucesso!', 'success');
+  const handleSaveAppointment = () => {
     setIsModalOpen(false);
+    setEditingAppointment(null);
+    showToast(editingAppointment ? 'Compromisso atualizado!' : 'Compromisso criado!', 'success');
   };
 
-  const handleDelete = (id: string) => {
-    if (window.confirm('Tem certeza que deseja excluir este compromisso?')) {
-      deleteAppointment(id);
-      addToast('Compromisso excluído.', 'info');
-      setIsModalOpen(false);
-    }
+  const handleDeleteAppointment = () => {
+    setIsModalOpen(false);
+    setEditingAppointment(null);
+    showToast('Compromisso excluído', 'info');
   };
 
   return (
-    <>
-      <Header
-        currentDate={currentDate}
+    <div className="h-screen w-full flex flex-col overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
         viewMode={viewMode}
-        onPrev={handlePrev}
-        onNext={handleNext}
-        onToday={handleToday}
         onViewChange={setViewMode}
-        onAddClick={handleAddClick}
       />
 
-      <main className="flex-1 overflow-hidden flex flex-col pt-2 relative">
-        {viewMode === 'day' && (
-          <DayView currentDate={currentDate} onEditAppointment={handleEditClick} />
-        )}
-        {viewMode === 'week' && (
-          <WeekView currentDate={currentDate} onEditAppointment={handleEditClick} />
-        )}
-        {viewMode === 'month' && (
-          <MonthView currentDate={currentDate} onEditAppointment={handleEditClick} />
-        )}
-      </main>
+      <Header
+        currentDate={currentDate}
+        onPrev={handlePrevious}
+        onNext={handleNext}
+        onToday={handleToday}
+        onMenuClick={() => setIsSidebarOpen(true)}
+      />
 
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={editingAppointment ? 'Editar Compromisso' : 'Novo Compromisso'}
-      >
+      {viewMode === 'day' && <DayView currentDate={currentDate} onEditAppointment={handleEditAppointment} />}
+      {viewMode === 'week' && <WeekView currentDate={currentDate} onEditAppointment={handleEditAppointment} />}
+      {viewMode === 'month' && <MonthView currentDate={currentDate} onEditAppointment={handleEditAppointment} />}
+
+      <FloatingActionButton onClick={handleAddClick} />
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingAppointment ? 'Editar Compromisso' : 'Novo Compromisso'}>
         <AppointmentForm
-          initialData={editingAppointment}
-          onSubmit={handleSave}
-          onDelete={editingAppointment ? handleDelete : undefined}
+          appointment={editingAppointment}
+          onSave={handleSaveAppointment}
+          onDelete={handleDeleteAppointment}
           onCancel={() => setIsModalOpen(false)}
         />
       </Modal>
-    </>
+    </div>
   );
 }
 
-export default App;
+export default function AppWrapper() {
+  return (
+    <AppointmentProvider>
+      <App />
+    </AppointmentProvider>
+  );
+}
